@@ -15,4 +15,6 @@ module.exports = {
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue',
   ],
+  setupFiles: ['<rootDir>/test/index.js'],
+  preset: '@nuxt/test-utils',
 }
