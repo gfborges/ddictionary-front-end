@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card">
+  <v-card class="card" @click="goToPage">
     <v-card-title> {{ title }} </v-card-title>
     <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
     <v-card-text> {{ definition }} </v-card-text>
@@ -27,6 +27,16 @@ export default Vue.extend({
     return {
       ...this.$props.entry,
     }
+  },
+  methods: {
+    goToPage() {
+      const link = this.getLink()
+      return this.$router.push(link)
+    },
+    getLink() {
+      const domain = this.$route.params.domain
+      return `/${domain}/${this.group}/${this.title}`
+    },
   },
 })
 </script>

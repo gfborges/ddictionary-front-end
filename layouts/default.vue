@@ -2,8 +2,12 @@
   <v-app>
     <v-app-bar fixed app>
       <v-app-bar-nav-icon />
+      <v-btn color="primary" @click="overlay = !overlay"> create </v-btn>
     </v-app-bar>
     <v-main>
+      <v-overlay :value="overlay">
+        <entry-create-form @canceled="overlay = false" @created="onCreated" />
+      </v-overlay>
       <v-container>
         <nuxt />
       </v-container>
@@ -14,8 +18,14 @@
   </v-app>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+import EntryCreateForm from '@/components/Entry/EntryCreateForm.vue'
+interface EntryCreateResponse {
+  id: string
+}
+export default Vue.extend({
+  components: { EntryCreateForm },
   data() {
     return {
       items: [
@@ -30,7 +40,18 @@ export default {
           to: '/inspire',
         },
       ],
+      overlay: false,
     }
   },
-}
+  methods: {
+    toggleOverlay() {
+      this.overlay = !this.overlay
+    },
+    onCreated(data: EntryCreateResponse) {
+      if (data.id) {
+        this.toggleOverlay()
+      }
+    },
+  },
+})
 </script>

@@ -4,13 +4,13 @@
       <v-card class="" width="100%">
         <v-card-title class="headline">
           <v-input append-icon="mdi-close" @click:append="clearInput()">
-            <input v-model="q" type="text" />
-            <nuxt-link slot="prepend" :to="getLink()">
-              <v-icon>mdi-magnify</v-icon>
-            </nuxt-link>
+            <input v-model="q" type="text" @keyup.enter="search" />
+            <v-icon slot="prepend" @click="search">mdi-magnify</v-icon>
           </v-input>
         </v-card-title>
-        <v-card-text> {{ $route.params.domain }}: {{ q }} </v-card-text>
+        <v-card-text v-if="searchedTerm()">
+          searched for {{ searchedTerm() }} on {{ domain }}
+        </v-card-text>
       </v-card>
       <v-card>
         <entry-search-card
@@ -43,7 +43,7 @@ export default Vue.extend({
         {
           title: 'Raccon',
           group: 'roedent',
-          definition: 'Animal that makes good meme',
+          definition: 'Animal that makes good memes',
         },
       ],
     }
@@ -65,6 +65,12 @@ export default Vue.extend({
     },
     clearInput() {
       this.q = ''
+    },
+    search() {
+      return this.$router.push(this.getLink())
+    },
+    searchedTerm() {
+      return this.$route.query.q
     },
   },
 })
