@@ -90,6 +90,7 @@ export default {
           login: { url: 'auth', method: 'POST' },
           user: { url: 'auth/me', method: 'GET' },
           logout: false,
+          redirect: false,
         },
         rewriteRedirects: false,
       },

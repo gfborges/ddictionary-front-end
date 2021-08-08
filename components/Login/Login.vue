@@ -3,8 +3,8 @@
     v-model="isOpened"
     :close-on-content-click="close.onContentClick"
     :close-on-click="close.onClick"
-    offset-x="50"
-    offset-y="5"
+    :offset-x="offset.x"
+    :offset-y="offset.y"
   >
     <template #activator="{ on, attrs }">
       <v-btn outlined v-bind="attrs" v-on="on"> LOGIN </v-btn>
@@ -30,6 +30,10 @@ export default Vue.extend({
   components: { PasswordField },
   data() {
     return {
+      offset: {
+        x: true,
+        y: true,
+      },
       isOpened: null,
       username: '',
       password: '',
@@ -47,13 +51,16 @@ export default Vue.extend({
       this.password = password
     },
     async login() {
+      this.setRedirect()
       await this.$auth.loginWith('local', {
         data: {
           username: this.username,
           password: this.password,
         },
-        redirect: `/${this.$route.params.domain}/search`,
       })
+    },
+    setRedirect() {
+      this.$auth.options.redirect.home = `/${this.username}`
     },
   },
 })
