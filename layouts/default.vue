@@ -1,9 +1,14 @@
 <template>
   <v-app fizxed>
     <v-app-bar fixed app dark>
-      <span id="domain-name" class="white--text text-h6 text-uppercase">
+      <nuxt-link
+        id="domain-name"
+        class="white--text text-h6 text-uppercase"
+        :to="homePageLink()"
+        :no-prefetch="noPrefetch"
+      >
         {{ domain }}
-      </span>
+      </nuxt-link>
       <v-btn v-if="isAuthenticated" color="primary" @click="overlay = !overlay">
         create
       </v-btn>
@@ -56,7 +61,9 @@ export default Vue.extend({
           to: '/inspire',
         },
       ],
+      noPrefetch: true,
       overlay: false,
+      link: '/pets',
     }
   },
   computed: {
@@ -71,6 +78,9 @@ export default Vue.extend({
         this.toggleOverlay()
       }
     },
+    homePageLink() {
+      return `/${this.$route.params.domain}`
+    },
   },
 })
 </script>
@@ -78,6 +88,7 @@ export default Vue.extend({
 <style>
 #domain-name {
   margin-right: 5px;
+  text-decoration: none;
 }
 html {
   overflow-y: auto !important;
