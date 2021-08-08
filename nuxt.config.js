@@ -37,11 +37,25 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    proxy: false,
+    baseURL: process.env.BACK_END,
+  },
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BACK_END,
+    },
+  },
 
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BACK_END,
+    },
+  },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -60,7 +74,27 @@ export default {
       },
     },
   },
-
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'access_token',
+          required: true,
+          type: 'Bearer',
+        },
+        user: {
+          property: false,
+          autoFetch: true,
+        },
+        endpoints: {
+          login: { url: 'auth', method: 'POST' },
+          user: { url: 'auth/me', method: 'GET' },
+          logout: false,
+        },
+        rewriteRedirects: false,
+      },
+    },
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }

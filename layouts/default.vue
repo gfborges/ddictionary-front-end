@@ -1,12 +1,23 @@
 <template>
-  <v-app>
-    <v-app-bar fixed app>
-      <v-app-bar-nav-icon />
-      <v-btn color="primary" @click="overlay = !overlay"> create </v-btn>
+  <v-app fizxed>
+    <v-app-bar fixed app dark>
+      <span id="domain-name" class="white--text text-h6 text-uppercase">
+        {{ domain }}
+      </span>
+      <v-btn v-if="isAuthenticated" color="primary" @click="overlay = !overlay">
+        create
+      </v-btn>
+      <v-spacer />
+      <avatar v-if="isAuthenticated" />
+      <login v-else />
     </v-app-bar>
     <v-main>
       <v-overlay :value="overlay">
-        <entry-create-form @canceled="overlay = false" @created="onCreated" />
+        <entry-create-form
+          v-click-outside="() => (overlay = false)"
+          @canceled="overlay = false"
+          @created="onCreated"
+        />
       </v-overlay>
       <v-container>
         <nuxt />
@@ -20,14 +31,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import EntryCreateForm from '@/components/Entry/EntryCreateForm.vue'
+import Avatar from '@/components/Login/Avatar.vue'
+import Login from '@/components/Login/Login.vue'
+
 interface EntryCreateResponse {
   id: string
 }
 export default Vue.extend({
-  components: { EntryCreateForm },
+  components: { EntryCreateForm, Avatar, Login },
   data() {
     return {
+      domain: this.$route.params.domain || ' ',
       items: [
         {
           icon: 'mdi-apps',
@@ -43,6 +59,9 @@ export default Vue.extend({
       overlay: false,
     }
   },
+  computed: {
+    ...mapGetters(['isAuthenticated', 'loggedInUser']),
+  },
   methods: {
     toggleOverlay() {
       this.overlay = !this.overlay
@@ -55,3 +74,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+#domain-name {
+  margin-right: 5px;
+}
+html {
+  overflow-y: auto !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+</style>

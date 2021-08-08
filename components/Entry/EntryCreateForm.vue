@@ -1,5 +1,5 @@
 <template>
-  <v-card light min-width="50vw" max-height="400px" class="scroll">
+  <v-card light min-width="60vw" max-height="400px" class="scroll">
     <v-card-title>Create New Entry</v-card-title>
     <v-form class="form">
       <v-text-field v-model="title" label="Title"> </v-text-field>

@@ -1,8 +1,10 @@
 <template>
   <v-card class="card" @click="goToPage">
-    <v-card-title> {{ title }} </v-card-title>
+    <v-card-title class="text-heading text-capitalize">
+      {{ title }}
+    </v-card-title>
     <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
-    <v-card-text> {{ definition }} </v-card-text>
+    <v-card-text class="text-capitalize"> {{ definitions }} </v-card-text>
   </v-card>
 </template>
 
@@ -35,7 +37,7 @@ export default Vue.extend({
     },
     getLink() {
       const domain = this.$route.params.domain
-      return `/${domain}/${this.group}/${this.title}`
+      return `/${domain}/entries/${this.group}/${this.title}`
     },
   },
 })

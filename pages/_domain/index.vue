@@ -1,84 +1,18 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="12" md="8">
-      <v-card class="" width="100%">
-        <v-card-title class="headline">
-          <v-input append-icon="mdi-close" @click:append="clearInput()">
-            <input v-model="q" type="text" @keyup.enter="search" />
-            <v-icon slot="prepend" @click="search">mdi-magnify</v-icon>
-          </v-input>
-        </v-card-title>
-        <v-card-text v-if="searchedTerm()">
-          searched for {{ searchedTerm() }} on {{ domain }}
-        </v-card-text>
-      </v-card>
-      <v-card>
-        <entry-search-card
-          v-for="(entry, i) of entries"
-          :key="i"
-          :entry="entry"
-        />
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-col>
+    <v-row>
+      <p>helllo</p>
+      <search-card />
+    </v-row>
+  </v-col>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import EntrySearchCard from '@/components/Entry/EntrySearchCard.vue'
-
+import SearchCard from '~/components/Search/SearchCard.vue'
 export default Vue.extend({
-  name: 'Search',
-  components: {
-    EntrySearchCard,
-  },
-  asyncData() {
-    return {
-      entries: [
-        {
-          title: 'Cat',
-          group: 'feline',
-          definition: 'Crazy animal',
-        },
-        {
-          title: 'Raccon',
-          group: 'roedent',
-          definition: 'Animal that makes good memes',
-        },
-      ],
-    }
-  },
-  data() {
-    return {
-      q: this.$route.query.q,
-      domain: this.$route.params.domain,
-      entries: null,
-    }
-  },
-  methods: {
-    getLink() {
-      return {
-        name: 'domain',
-        params: { domain: this.domain },
-        query: { q: this.q },
-      }
-    },
-    clearInput() {
-      this.q = ''
-    },
-    search() {
-      return this.$router.push(this.getLink())
-    },
-    searchedTerm() {
-      return this.$route.query.q
-    },
-  },
+  components: { SearchCard },
 })
 </script>
 
-<style scoped>
-input {
-  width: 100%;
-  font-size: 15pt;
-}
-</style>
+<style></style>

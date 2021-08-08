@@ -4,8 +4,10 @@
       <v-card class="tile">
         <v-card-title>
           {{ captalize(title) }} <v-spacer />
-          <v-icon id="delete">mdi-delete</v-icon>
-          <v-icon id="update">mdi-lead-pencil</v-icon>
+          <span v-if="isAuthenticated">
+            <v-icon id="delete">mdi-delete</v-icon>
+            <v-icon id="update">mdi-lead-pencil</v-icon>
+          </span>
         </v-card-title>
         <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
       </v-card>
@@ -13,8 +15,17 @@
         <v-card-title> Definitions </v-card-title>
         <v-card-text class="text">
           <v-list>
-            <v-list-item v-for="(definition, i) in definitions" :key="i">
-              <b>{{ i + 1 }}.</b>&nbsp; {{ definition }}
+            <v-list-item
+              v-for="(definition, i) in definitions"
+              :key="i"
+              align="center"
+              justify="center"
+              class="defs"
+            >
+              <div>
+                <strong>{{ i + 1 }}.</strong>&nbsp;
+              </div>
+              <vue-markdown :source="definition"></vue-markdown>
             </v-list-item>
           </v-list>
         </v-card-text>
@@ -39,17 +50,22 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
+import VueMarkdown from 'vue-markdown'
 
 export default Vue.extend({
   name: 'EntryDetail',
-  async asyncData({ $axios, route }) {
-    return await $axios.$get('http://localhost:8000/entries/one', {
-      params: {
-        domain: route.params.domain,
-        group: route.params.group,
-        title: route.params.entry,
-      },
-    })
+  components: { VueMarkdown },
+  async asyncData({ $axios, route, error }) {
+    return await $axios
+      .$get('http://localhost:8000/entries/one', {
+        params: {
+          domain: route.params.domain,
+          group: route.params.group,
+          title: route.params.entry,
+        },
+      })
+      .catch((err) => error({ statusCode: 404, message: err.toString() }))
   },
   data() {
     return {
@@ -57,9 +73,12 @@ export default Vue.extend({
         'https://s2.glbimg.com/GNj4iknAWT6WI5kK0VXxPCSyF34=/696x390/top/smart/s2.glbimg.com/ft2dX8r-GS9hdBtuvCXZkD-a2lo=/0x39:695x764/695x725/s.glbimg.com/po/tt2/f/original/2016/07/08/curiouscattwitter.jpg',
       title: 'title',
       group: 'group',
-      definitions: ['first', 'second', 'third'],
+      definitions: ['`first`', 'second', 'third'],
       translations: ['primeiro', 'segundo'],
     }
+  },
+  computed: {
+    ...mapGetters(['isAuthenticated', 'loggedInUser']),
   },
   methods: {
     captalize(str: string) {
@@ -108,5 +127,9 @@ img {
   display: block;
   margin: auto;
   max-width: 400px;
+}
+
+.defs {
+  align-items: flex-start;
 }
 </style>
