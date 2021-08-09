@@ -3,8 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - front-end',
-    title: 'front-end',
+    titleTemplate: '%s',
     htmlAttrs: {
       lang: 'en',
     },
@@ -20,7 +19,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: './plugins/vue2-editor', ssr: false }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -45,6 +44,7 @@ export default {
     proxy: false,
     baseURL: process.env.BACK_END,
   },
+
   publicRuntimeConfig: {
     axios: {
       baseURL: process.env.BACK_END,
@@ -74,6 +74,7 @@ export default {
       },
     },
   },
+
   auth: {
     strategies: {
       local: {
@@ -98,4 +99,8 @@ export default {
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  router: {
+    middleware: 'domain',
+  },
 }

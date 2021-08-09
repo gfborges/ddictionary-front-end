@@ -7,7 +7,7 @@
         :to="homePageLink()"
         :no-prefetch="noPrefetch"
       >
-        {{ domain }}
+        {{ domain.name }}
       </nuxt-link>
       <v-btn v-if="isAuthenticated" color="primary" @click="overlay = !overlay">
         create
@@ -48,7 +48,6 @@ export default Vue.extend({
   components: { EntryCreateForm, Avatar, Login },
   data() {
     return {
-      domain: this.$route.params.domain || ' ',
       items: [
         {
           icon: 'mdi-apps',
@@ -66,8 +65,17 @@ export default Vue.extend({
       link: '/pets',
     }
   },
+  head() {
+    return {
+      title: this.$route.params.domain,
+    }
+  },
   computed: {
-    ...mapGetters(['isAuthenticated', 'loggedInUser']),
+    ...mapGetters({
+      isAuthenticated: 'isAuthenticated',
+      loggedInUser: 'loggedInUser',
+      domain: 'domain/domain',
+    }),
   },
   methods: {
     toggleOverlay() {
@@ -90,6 +98,7 @@ export default Vue.extend({
   margin-right: 5px;
   text-decoration: none;
 }
+
 html {
   overflow-y: auto !important;
   scrollbar-width: none;

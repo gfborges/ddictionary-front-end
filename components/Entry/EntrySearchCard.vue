@@ -4,7 +4,7 @@
       {{ title }}
     </v-card-title>
     <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
-    <v-card-text class="text-capitalize"> {{ definitions }} </v-card-text>
+    <v-card-text> {{ definitions }} </v-card-text>
   </v-card>
 </template>
 

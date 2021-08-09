@@ -1,56 +1,65 @@
 <template>
-  <v-card light min-width="60vw" max-height="400px" class="scroll">
+  <v-card>
     <v-card-title>Create New Entry</v-card-title>
-    <v-form class="form">
-      <v-text-field v-model="title" label="Title"> </v-text-field>
-      <v-combobox
-        v-model="group"
-        :items="groups"
-        label="Group"
-        chips
-      ></v-combobox>
-      <v-list v-if="definitions.length" outlined>
-        <v-subheader>Definitions</v-subheader>
-        <v-list-item-group>
-          <draggable v-model="definitions">
-            <v-list-item v-for="(def, i) of definitions" :key="i">
-              {{ def }}
-            </v-list-item>
-          </draggable>
-        </v-list-item-group>
-      </v-list>
-      <v-textarea
-        v-model="definition"
-        label="Definition"
-        counter="255"
-        clearable
-        @keyup.enter="addDefinition()"
-      ></v-textarea>
-      <v-list v-if="translations.length" outlined>
-        <v-subheader>Translations</v-subheader>
-        <v-list-item-group>
-          <v-list-item v-for="(trans, i) of translations" :key="i">
-            {{ trans }}
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-      <v-text-field
-        v-model="translation"
-        counter="25"
-        label="Translation"
-        @keyup.enter="addTransaction()"
-      >
-      </v-text-field>
-      <v-file-input
-        :rules="imageRules"
-        accept="image/png, image/jpeg, image/bmp"
-        label="Image"
-        placeholder="Pick an image"
-        prepend-icon="mdi-image"
-        show-size
-        @change="addImage"
-      ></v-file-input>
-    </v-form>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-form class="form">
+            <v-text-field v-model="title" required label="Title">
+            </v-text-field>
+            <v-combobox
+              v-model="group"
+              :items="groups"
+              label="Group"
+              chips
+            ></v-combobox>
+            <no-ssr placeholder="Loading Your Editor...">
+              <vue-editor
+                v-model="definition"
+                :disabled="editor.disabled"
+                :editor-options="editor.options"
+              ></vue-editor>
+            </no-ssr>
+            <v-text-field
+              v-model="translation"
+              counter="25"
+              label="Translation"
+              @keyup.enter="addTransaction()"
+            >
+            </v-text-field>
+            <v-file-input
+              :rules="imageRules"
+              accept="image/png, image/jpeg, image/bmp"
+              label="Image"
+              placeholder="Pick an image"
+              prepend-icon="mdi-image"
+              show-size
+              @change="addImage"
+            ></v-file-input>
+          </v-form>
+        </v-col>
+        <v-col class="overflow-y-auto" style="max-height: 70vh">
+          <v-list outlined>
+            <v-subheader>Definitions</v-subheader>
+            <v-list-item-group>
+              <draggable v-model="definitions">
+                <v-list-item v-for="(def, i) of definitions" :key="i">
+                  {{ def }}
+                </v-list-item>
+              </draggable>
+            </v-list-item-group>
+          </v-list>
+          <v-list outlined class="mt-2">
+            <v-subheader>Translations</v-subheader>
+            <v-list-item-group>
+              <v-list-item v-for="(trans, i) of translations" :key="i">
+                {{ trans }}
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-col>
+      </v-row>
+    </v-card-text>
     <v-card-actions>
       <v-btn color="primary" @click="create">create</v-btn>
       <v-btn outlined color="normal" @click="emitCancel">cancel</v-btn>
@@ -81,6 +90,15 @@ export default Vue.extend({
       groups: ['subtitle', 'group'],
       definitions: [] as string[],
       translations: [] as string[],
+      editor: {
+        disabled: false,
+        toolbar: ['bold', 'italic', 'underline'],
+        options: {
+          modules: {
+            toolbar: false,
+          },
+        },
+      },
     }
   },
   methods: {
@@ -126,9 +144,5 @@ export default Vue.extend({
 <style>
 .form {
   margin: 0px 16px 0px 16px;
-}
-
-.scroll {
-  overflow-y: scroll;
 }
 </style>

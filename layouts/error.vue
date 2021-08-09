@@ -2,7 +2,7 @@
   <v-app>
     <v-layout class="text-center" justify-center align-center>
       <v-col>
-        <img src="@/assets/emoji-sad-face.svg" />
+        <img src="@/static/emoji-sad-face.svg" />
         <h1 v-if="error.statusCode === 404">
           {{ pageNotFound }}
         </h1>

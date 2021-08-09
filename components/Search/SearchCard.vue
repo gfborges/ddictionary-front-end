@@ -1,14 +1,12 @@
 <template>
   <v-card class="" width="100%">
     <v-card-title class="headline">
-      <v-input append-icon="mdi-close" @click:append="clearInput()">
-        <input ref="search" v-model="q" type="text" @keyup.enter="search" />
+      <v-input :messages="[searchedTermMessage()]">
         <v-icon slot="prepend" @click="search">mdi-magnify</v-icon>
+        <input ref="search" v-model="q" type="text" @keyup.enter="search" />
+        <v-icon v-if="q" slot="append" @click="clearInput">mdi-close</v-icon>
       </v-input>
     </v-card-title>
-    <v-card-text v-if="searchedTerm()">
-      searched for {{ searchedTerm() }} on {{ domain }}
-    </v-card-text>
   </v-card>
 </template>
 <script lang="ts">
@@ -40,10 +38,16 @@ export default Vue.extend({
       this.q = ''
     },
     search() {
-      return this.$router.push(this.getLink())
+      if (this.q) {
+        return this.$router.push(this.getLink())
+      }
     },
-    searchedTerm() {
-      return this.$route.query.q
+    searchedTermMessage() {
+      const searched = this.$route.query.q
+      if (searched) {
+        return `searched for ${this.$route.query.q}`
+      }
+      return ''
     },
   },
 })
