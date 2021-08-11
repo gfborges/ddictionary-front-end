@@ -17,6 +17,7 @@
     "core-js": "^3.9.1",
     "nuxt": "^2.15.3",
     "vue-markdown": "^2.2.4",
+    "vue-simplemde": "^2.0.0",
     "vue2-editor": "^2.10.2",
     "vuedraggable": "^2.24.3"
   },

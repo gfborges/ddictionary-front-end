@@ -9,17 +9,22 @@
             </v-text-field>
             <v-combobox
               v-model="group"
-              :items="groups"
+              :items="domain.groups"
               label="Group"
               chips
             ></v-combobox>
-            <no-ssr placeholder="Loading Your Editor...">
-              <vue-editor
-                v-model="definition"
-                :disabled="editor.disabled"
-                :editor-options="editor.options"
-              ></vue-editor>
-            </no-ssr>
+            <client-only placeholder="Loading Your Editor...">
+              <vue-simplemde
+                ref="markdownEditor"
+                v-model="currentDefinitionText"
+                :configs="editor"
+                placeholder="Write your definition"
+                @input="addDefinition()"
+              ></vue-simplemde>
+              <v-btn class="text--button" @click="addDefinition">
+                add definition
+              </v-btn>
+            </client-only>
             <v-text-field
               v-model="translation"
               counter="25"
@@ -44,7 +49,17 @@
             <v-list-item-group>
               <draggable v-model="definitions">
                 <v-list-item v-for="(def, i) of definitions" :key="i">
-                  {{ def }}
+                  <v-list-item-content @mouseover="def.toggleShowEdit()">
+                    <vue-markdown> {{ def.text }} </vue-markdown>
+                  </v-list-item-content>
+                  <v-list-item-action v-show="def.showEdit">
+                    <span>
+                      <v-icon @click="definitions.splice(def, 1)">
+                        mdi-delete
+                      </v-icon>
+                      <v-icon>mdi-lead-pencil</v-icon>
+                    </span>
+                  </v-list-item-action>
                 </v-list-item>
               </draggable>
             </v-list-item-group>
@@ -70,11 +85,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import draggable from 'vuedraggable'
+import VueMarkdown from 'vue-markdown'
+import { mapGetters } from 'vuex'
+import { Definition } from './Definition'
 
 export default Vue.extend({
   name: 'EntryCreateForm',
   components: {
     draggable,
+    VueMarkdown,
   },
   data() {
     return {
@@ -84,22 +103,38 @@ export default Vue.extend({
       ],
       title: '',
       group: '',
-      definition: '',
+      currentDefinitionText: '',
       translation: '',
       image: '',
-      groups: ['subtitle', 'group'],
-      definitions: [] as string[],
+      definitions: [] as Definition[],
       translations: [] as string[],
       editor: {
-        disabled: false,
-        toolbar: ['bold', 'italic', 'underline'],
-        options: {
-          modules: {
-            toolbar: false,
-          },
-        },
+        toolbar: [
+          'bold',
+          'italic',
+          'heading',
+          '|',
+          'heading-smaller',
+          'heading-bigger',
+          'quote',
+          '|',
+          'table',
+          'link',
+          'code',
+          'guide',
+          'clean-block',
+        ],
+        spellChecker: false,
       },
     }
+  },
+  head() {
+    return {
+      title: 'create entry',
+    }
+  },
+  computed: {
+    ...mapGetters({ domain: 'domain/domain' }),
   },
   methods: {
     emitCancel() {
@@ -117,9 +152,11 @@ export default Vue.extend({
       this.$emit('created', data)
     },
     addDefinition() {
-      if (this.definition.length <= 255) {
-        this.definitions.push(this.definition)
-        this.definition = ''
+      if (this.currentDefinitionText) {
+        this.definitions.push(new Definition(this.currentDefinitionText))
+        this.currentDefinitionText = ''
+        const simplemde = (this.$refs.markdownEditor as any).simplemde
+        simplemde.value('')
       }
     },
     addTransaction() {

@@ -45,6 +45,7 @@ interface EntryCreateResponse {
   id: string
 }
 export default Vue.extend({
+  name: 'Default',
   components: { EntryCreateForm, Avatar, Login },
   data() {
     return {
