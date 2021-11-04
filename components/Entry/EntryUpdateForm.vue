@@ -90,7 +90,7 @@
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" @click="submit">create</v-btn>
+      <v-btn color="primary" @click="update">update</v-btn>
       <v-btn outlined color="normal" @click="emitCancel">cancel</v-btn>
     </v-card-actions>
   </v-card>
@@ -104,10 +104,16 @@ import { mapGetters } from 'vuex'
 import Definition from './Definition'
 
 export default Vue.extend({
-  name: 'EntryCreateForm',
+  name: 'EntryUpdateForm',
   components: {
     draggable,
     VueMarkdown,
+  },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -151,6 +157,20 @@ export default Vue.extend({
   computed: {
     ...mapGetters({ domain: 'domain/domain' }),
   },
+  async mounted() {
+    const entry = await this.$axios
+      .$get(`http://localhost:8000/entries/${this.$props.id}`)
+      .catch()
+    this.title = entry.title
+    this.group = entry.group
+    this.definitions = new Array(entry.definitions.length)
+    this.image = entry.image
+    this.translations = entry.translations
+
+    entry.definitions.forEach((text: string, order: number) => {
+      this.definitions[order] = { text, order, showEdit: false }
+    })
+  },
   methods: {
     emitCancel() {
       this.$emit('canceled')
@@ -172,10 +192,10 @@ export default Vue.extend({
         return
       }
       await this.addGroup()
-      this.create()
+      await this.update()
     },
-    getFormData() {
-      return {
+    getFormData(options: any = {}) {
+      const data = {
         domain: this.domain.slug,
         title: this.title,
         group: this.group,
@@ -183,13 +203,16 @@ export default Vue.extend({
         translations: this.translations,
         image: this.image,
       }
+      Object.apply(data, options)
+      return data
     },
-    async create() {
-      const data = await this.$axios.$post(
-        'http://localhost:8000/entries',
-        this.getFormData()
+    async update() {
+      const data = this.getFormData({ domain: undefined })
+      await this.$axios.$patch(
+        `http://localhost:8000/entries/${this.$props.id}`,
+        data
       )
-      this.$emit('created', data)
+      this.$emit('updated', { domain: this.domain })
     },
     async addGroup() {
       if (!this.domain.groups.includes(this.group)) {

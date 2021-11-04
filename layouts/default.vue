@@ -9,21 +9,14 @@
       >
         {{ domain.name }}
       </nuxt-link>
-      <v-btn v-if="isAuthenticated" color="primary" @click="overlay = !overlay">
-        create
-      </v-btn>
+      <nuxt-link :to="`/${domain.slug}/create-entry`" :no-prefetch="noPrefetch">
+        <v-btn v-if="isAuthenticated" color="primary"> create </v-btn>
+      </nuxt-link>
       <v-spacer />
       <avatar v-if="isAuthenticated" />
       <login v-else />
     </v-app-bar>
     <v-main>
-      <v-overlay :value="overlay">
-        <entry-create-form
-          v-click-outside="() => (overlay = false)"
-          @canceled="overlay = false"
-          @created="onCreated"
-        />
-      </v-overlay>
       <v-container>
         <nuxt />
       </v-container>
@@ -37,16 +30,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import EntryCreateForm from '@/components/Entry/EntryCreateForm.vue'
 import Avatar from '@/components/Login/Avatar.vue'
 import Login from '@/components/Login/Login.vue'
 
-interface EntryCreateResponse {
-  id: string
-}
 export default Vue.extend({
   name: 'Default',
-  components: { EntryCreateForm, Avatar, Login },
+  components: { Avatar, Login },
   data() {
     return {
       items: [
@@ -62,7 +51,6 @@ export default Vue.extend({
         },
       ],
       noPrefetch: true,
-      overlay: false,
       link: '/pets',
     }
   },
@@ -79,15 +67,7 @@ export default Vue.extend({
     }),
   },
   methods: {
-    toggleOverlay() {
-      this.overlay = !this.overlay
-    },
-    onCreated(data: EntryCreateResponse) {
-      if (data.id) {
-        this.toggleOverlay()
-      }
-    },
-    homePageLink() {
+    homePageLink(): string {
       return `/${this.$route.params.domain}`
     },
   },

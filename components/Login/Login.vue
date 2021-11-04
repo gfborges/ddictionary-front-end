@@ -37,6 +37,7 @@ export default Vue.extend({
       isOpened: null,
       username: '',
       password: '',
+      errorMsg: '',
       close: {
         onClick: true,
         onContentClick: false,
@@ -52,12 +53,14 @@ export default Vue.extend({
     },
     async login() {
       this.setRedirect()
-      await this.$auth.loginWith('local', {
-        data: {
-          username: this.username,
-          password: this.password,
-        },
-      })
+      await this.$auth
+        .loginWith('local', {
+          data: {
+            username: this.username,
+            password: this.password,
+          },
+        })
+        .catch(() => (this.errorMsg = 'Wrong username or password'))
     },
     setRedirect() {
       this.$auth.options.redirect.home = `/${this.username}`

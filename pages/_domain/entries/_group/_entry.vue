@@ -1,12 +1,15 @@
 <template>
   <v-row>
     <v-col>
+      <v-overlay :absolute="absolute" :value="overlay">
+        <v-btn color="success" @click="overlay = false"> Hide Overlay </v-btn>
+      </v-overlay>
       <v-card class="tile">
         <v-card-title>
           {{ captalize(title) }} <v-spacer />
           <span v-if="isAuthenticated">
-            <v-icon id="delete">mdi-delete</v-icon>
-            <v-icon id="update">mdi-lead-pencil</v-icon>
+            <v-icon id="delete" @click="deleteEntry">mdi-delete</v-icon>
+            <v-icon id="update" @click="updateEntry">mdi-lead-pencil</v-icon>
           </span>
         </v-card-title>
         <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
@@ -75,6 +78,9 @@ export default Vue.extend({
       group: 'group',
       definitions: ['`first`', 'second', 'third'],
       translations: ['primeiro', 'segundo'],
+      overlay: false,
+      absolute: false,
+      id: 'object_id',
     }
   },
   computed: {
@@ -84,6 +90,19 @@ export default Vue.extend({
     captalize(str: string) {
       const firstLetter = str.charAt(0).toLocaleUpperCase()
       return firstLetter + str.substring(1)
+    },
+    deleteEntry() {
+      this.$axios.$delete(`/entries/${this.id}`).catch((e) => console.error(e))
+      this.$router.push({
+        name: 'domain',
+        params: { domain: this.$route.params.domain },
+      })
+    },
+    updateEntry() {
+      this.$router.push({
+        name: 'domain-update-entry',
+        params: { domain: this.$route.params.domain, entry: this.id },
+      })
     },
   },
 })

@@ -27,19 +27,12 @@ export default Vue.extend({
     }
   },
   methods: {
-    getLink() {
-      return {
-        name: 'domain-search',
-        params: { domain: this.domain },
-        query: { q: this.q },
-      }
-    },
     clearInput() {
       this.q = ''
     },
     search() {
       if (this.q) {
-        return this.$router.push(this.getLink())
+        this.$emit('on-search', this.q)
       }
     },
     searchedTermMessage() {

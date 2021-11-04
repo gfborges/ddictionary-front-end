@@ -1,7 +1,7 @@
 <template>
   <v-row cols="12" sm="12" md="12">
     <v-col>
-      <entry-create-form @created="onCreated" />
+      <entry-update-form :id="$route.params.entry" @updated="onUpdate" />
     </v-col>
   </v-row>
 </template>
@@ -9,17 +9,20 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import EntryCreateForm from '@/components/Entry/EntryCreateForm.vue'
 import { Entry } from '~/dto/Entry'
+import EntryUpdateForm from '~/components/Entry/EntryUpdateForm.vue'
 
 export default Vue.extend({
-  name: 'CreateEntry',
-  components: { EntryCreateForm },
+  name: 'UpdateEntry',
+  components: { EntryUpdateForm },
   computed: {
     ...mapGetters({ domain: 'domain/domain' }),
   },
+  mounted() {
+    console.log('hey')
+  },
   methods: {
-    onCreated(entry: Entry) {
+    onUpdate(entry: Entry) {
       console.log(entry)
       this.$router.push({
         name: 'domain',

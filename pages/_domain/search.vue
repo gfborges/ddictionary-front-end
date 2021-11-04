@@ -1,11 +1,14 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="12" md="12">
-      <search-card :initq="$route.query.q" />
+      <v-alert v-if="errorMsg" color="red" type="error" outlined>
+        {{ errorMsg }}
+      </v-alert>
+      <search-card :initq="$route.query.q" @on-search="search" />
       <v-card>
         <entry-search-card
-          v-for="(entry, i) of entries"
-          :key="i"
+          v-for="entry in entries"
+          :key="entry.id"
           :entry="entry"
         />
       </v-card>
@@ -25,19 +28,23 @@ export default Vue.extend({
     EntrySearchCard,
     SearchCard,
   },
-  async asyncData({ $axios, route, error }) {
-    return {
-      entries: await $axios
-        .$get('/entries/all', {
-          params: {
-            domain: route.params.domain,
-          },
-        })
-        .catch(() => error({ statusCode: 404 })),
+  async asyncData({ $axios, route }) {
+    try {
+      const entries = await $axios.$get('/entries/search', {
+        params: {
+          domain: route.params.domain,
+          text: route.query.q,
+        },
+      })
+      return { entries }
+    } catch (e) {
+      console.error(e)
+      return { errorMsg: 'Could not search for entries.' }
     }
   },
   data() {
     return {
+      errorMsg: '',
       q: this.$route.query.q,
       domain: this.$route.params.domain,
       entries: null,
@@ -46,19 +53,20 @@ export default Vue.extend({
   computed: {
     ...mapGetters(['isAuthenticated', 'loggedInUser']),
   },
+  watchQuery: true,
   methods: {
-    getLink() {
+    getLink(q: string) {
       return {
         name: 'domain-search',
         params: { domain: this.domain },
-        query: { q: this.q },
+        query: { q },
       }
     },
     clearInput() {
       this.q = ''
     },
-    search() {
-      return this.$router.push(this.getLink())
+    search(q: string) {
+      return this.$router.push(this.getLink(q))
     },
     searchedTerm() {
       return this.$route.query.q

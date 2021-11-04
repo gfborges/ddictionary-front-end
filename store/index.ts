@@ -2,6 +2,7 @@ export interface AuthState {
   auth: {
     loggedIn: boolean
     user: unknown
+    strategy: unknown
   }
 }
 
