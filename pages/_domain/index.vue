@@ -11,6 +11,14 @@
         </v-card-text>
       </v-card>
     </v-row>
+    <v-row class="mb-5">
+      <span>
+        <v-icon> mdi-exit-to-app </v-icon>
+        <nuxt-link id="summary__link" :to="summaryLink()">
+          go to summary
+        </nuxt-link>
+      </span>
+    </v-row>
     <v-row>
       <v-card id="search_logs__card" class="mr-5">
         <v-card-title> Latest searches </v-card-title>
@@ -37,6 +45,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import VueMarkdown from 'vue-markdown'
 import SearchCard from '@/components/Search/SearchCard.vue'
+import Domain from '~/dto/Domain'
 
 export default Vue.extend({
   components: { SearchCard, VueMarkdown },
@@ -52,6 +61,7 @@ export default Vue.extend({
       defaultDescription: 'A documentation',
       recentViews: ['Account', 'Agency', 'Transaction', 'Debt', 'Credit'],
       searchLogs: ['acount', 'agent', 'transactions', 'debtit', 'card'],
+      domain: null as unknown as Domain,
     }
   },
   computed: {
@@ -69,6 +79,9 @@ export default Vue.extend({
     },
     search(q: string) {
       return this.$router.push(this.getLink(q))
+    },
+    summaryLink(): string {
+      return `/${this.domain.slug}/summary`
     },
   },
 })
