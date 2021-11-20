@@ -90,8 +90,8 @@ export default Vue.extend({
     search(q: string) {
       return this.$router.push(this.getLink(q))
     },
-    summaryLink(): string {
-      return `/${this.domain.slug}/summary`
+    summaryLink(): { name: string } {
+      return { name: 'domains-domain-summary' }
     },
   },
 })
