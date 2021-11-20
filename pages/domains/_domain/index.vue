@@ -82,7 +82,7 @@ export default Vue.extend({
   methods: {
     getLink(q: string) {
       return {
-        name: 'domain-search',
+        name: 'domains-domain-search',
         params: { domain: this.$route.params.domain },
         query: { q },
       }
@@ -90,8 +90,9 @@ export default Vue.extend({
     search(q: string) {
       return this.$router.push(this.getLink(q))
     },
-    summaryLink(): { name: string } {
-      return { name: 'domains-domain-summary' }
+    summaryLink(): { name: string; params: {} } {
+      const domain = this.$route.params.domain
+      return { name: 'domains-domain-summary', params: { domain } }
     },
   },
 })

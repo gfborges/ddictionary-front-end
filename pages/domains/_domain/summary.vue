@@ -38,7 +38,12 @@ export default Vue.extend({
   },
   methods: {
     entryLink(entry: Entry) {
-      return `/${this.domain}/entries/${entry.group}/${entry.title}`
+      const params = {
+        domain: this.domain,
+        group: entry.group,
+        entry: entry.title,
+      }
+      return { name: 'domains-domain-entries-group-entry', params }
     },
   },
 })

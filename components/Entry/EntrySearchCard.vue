@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts">
+// eslint-disable-next-line import/named
 import Vue, { PropOptions } from 'vue'
 
 export interface EntrySearch {
@@ -37,7 +38,10 @@ export default Vue.extend({
     },
     getLink() {
       const domain = this.$route.params.domain
-      return `/${domain}/entries/${this.group}/${this.title}`
+      return {
+        name: 'domains-domain-entries-group-entry',
+        params: { domain, group: this.group, entry: this.title },
+      }
     },
   },
 })

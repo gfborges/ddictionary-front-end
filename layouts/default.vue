@@ -9,7 +9,7 @@
       >
         {{ domain.name }}
       </nuxt-link>
-      <nuxt-link :to="`/${domain.slug}/create-entry`" :no-prefetch="noPrefetch">
+      <nuxt-link :to="createEntryLink()" :no-prefetch="noPrefetch">
         <v-btn v-if="isAuthenticated" color="primary"> create </v-btn>
       </nuxt-link>
       <v-spacer />
@@ -67,8 +67,13 @@ export default Vue.extend({
     }),
   },
   methods: {
-    homePageLink(): string {
-      return `/${this.$route.params.domain}`
+    homePageLink(): { name: string; params: {} } {
+      const domain = this.$route.params.domain
+      return { name: 'domains-domain', params: { domain } }
+    },
+    createEntryLink(): { name: string; params: {} } {
+      const domain = this.$route.params.domain
+      return { name: 'domains-domain-create-entry', params: { domain } }
     },
   },
 })

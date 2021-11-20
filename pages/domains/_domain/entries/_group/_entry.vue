@@ -101,7 +101,7 @@ export default Vue.extend({
     },
     updateEntry() {
       this.$router.push({
-        name: 'domain-update-entry',
+        name: 'domains-domain-update-entry',
         params: { domain: this.$route.params.domain, entry: this.id },
       })
     },
