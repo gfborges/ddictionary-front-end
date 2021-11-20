@@ -34,6 +34,7 @@ export default Vue.extend({
         params: {
           domain: route.params.domain,
           text: route.query.q,
+          log: 'y',
         },
       })
       return { entries }

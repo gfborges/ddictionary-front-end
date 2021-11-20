@@ -11,7 +11,7 @@
             <!-- group -->
             <v-combobox
               v-model="group"
-              :items="domain.groups"
+              :items="groups"
               label="Group"
               chips
             ></v-combobox>
@@ -101,7 +101,7 @@ import Vue from 'vue'
 import draggable from 'vuedraggable'
 import VueMarkdown from 'vue-markdown'
 import { mapGetters } from 'vuex'
-import Definition from './Definition'
+import { EntryDefinition } from './Definition'
 
 export default Vue.extend({
   name: 'EntryCreateForm',
@@ -117,11 +117,13 @@ export default Vue.extend({
       ],
       title: '',
       group: '',
+      groups: [] as string[],
       currentDefinitionText: '',
+      test: 'false',
       definitionCount: 0,
       translation: '',
-      image: undefined,
-      definitions: [] as Definition[],
+      image: undefined as unknown as string,
+      definitions: [] as EntryDefinition[],
       translations: [] as string[],
       editor: {
         toolbar: [
@@ -150,6 +152,13 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({ domain: 'domain/domain' }),
+  },
+  async mounted() {
+    const domainSlug = this.$route.params.domain
+    const groups = await this.$axios
+      .$get(`/domains/${domainSlug}/groups`)
+      .catch((e) => console.error(e))
+    this.groups = groups.map((g: { slug: string }) => g.slug)
   },
   methods: {
     emitCancel() {
@@ -185,17 +194,14 @@ export default Vue.extend({
       }
     },
     async create() {
-      const data = await this.$axios.$post(
-        'http://localhost:8000/entries',
-        this.getFormData()
-      )
+      const data = await this.$axios.$post('/entries', this.getFormData())
       this.$emit('created', data)
     },
     async addGroup() {
-      if (!this.domain.groups.includes(this.group)) {
+      if (!this.groups.includes(this.group)) {
         await this.$axios
-          .$patch('http://localhost:8000/domains/' + this.domain._id, {
-            groups: this.group,
+          .$post(`/domains/${this.domain.slug}/groups`, {
+            slug: this.group,
           })
           .catch((e) => console.error(e))
       }

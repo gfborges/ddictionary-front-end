@@ -8,7 +8,7 @@
             <v-list-item-content>
               <v-list-item-title>
                 <nuxt-link :to="entryLink(entry)">
-                  {{ entry.title }}
+                  {{ entry.group }}/{{ entry.title }}
                 </nuxt-link>
               </v-list-item-title>
             </v-list-item-content>
@@ -26,7 +26,7 @@ export default Vue.extend({
   name: 'Summary',
   async asyncData({ $axios, route }) {
     const domain = route.params.domain
-    const entries = await $axios.$get('http://localhost:8000/entries/all', {
+    const entries = await $axios.$get('/entries/all', {
       params: { domain },
     })
     return { entries }

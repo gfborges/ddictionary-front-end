@@ -101,7 +101,7 @@ import Vue from 'vue'
 import draggable from 'vuedraggable'
 import VueMarkdown from 'vue-markdown'
 import { mapGetters } from 'vuex'
-import Definition from './Definition'
+import { EntryDefinition } from './Definition'
 
 export default Vue.extend({
   name: 'EntryUpdateForm',
@@ -123,11 +123,12 @@ export default Vue.extend({
       ],
       title: '',
       group: '',
+      groups: [] as string[],
       currentDefinitionText: '',
       definitionCount: 0,
       translation: '',
-      image: undefined,
-      definitions: [] as Definition[],
+      image: undefined as unknown as string,
+      definitions: [] as EntryDefinition[],
       translations: [] as string[],
       editor: {
         toolbar: [
@@ -158,9 +159,7 @@ export default Vue.extend({
     ...mapGetters({ domain: 'domain/domain' }),
   },
   async mounted() {
-    const entry = await this.$axios
-      .$get(`http://localhost:8000/entries/${this.$props.id}`)
-      .catch()
+    const entry = await this.$axios.$get(`/entries/${this.$props.id}`).catch()
     this.title = entry.title
     this.group = entry.group
     this.definitions = new Array(entry.definitions.length)
@@ -170,6 +169,8 @@ export default Vue.extend({
     entry.definitions.forEach((text: string, order: number) => {
       this.definitions[order] = { text, order, showEdit: false }
     })
+    const groups = await this.$axios.$get(`/domains/${this.domain.slug}/groups`)
+    this.groups = groups.map((g: { slug: string }) => g.slug)
   },
   methods: {
     emitCancel() {
@@ -208,17 +209,15 @@ export default Vue.extend({
     },
     async update() {
       const data = this.getFormData({ domain: undefined })
-      await this.$axios.$patch(
-        `http://localhost:8000/entries/${this.$props.id}`,
-        data
-      )
+      await this.$axios.$patch(`/entries/${this.$props.id}`, data)
       this.$emit('updated', { domain: this.domain })
     },
     async addGroup() {
-      if (!this.domain.groups.includes(this.group)) {
+      if (!this.groups.includes(this.group)) {
+        const domainSlug = this.domain.slug
         await this.$axios
-          .$patch('http://localhost:8000/domains/' + this.domain._id, {
-            groups: this.group,
+          .$post(`/domains/${domainSlug}/groups`, {
+            slug: this.group,
           })
           .catch((e) => console.error(e))
       }

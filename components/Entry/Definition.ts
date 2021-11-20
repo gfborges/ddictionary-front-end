@@ -1,4 +1,4 @@
-export default interface Definition {
+export interface EntryDefinition {
   text: string
   showEdit: boolean
   order: number

@@ -5,33 +5,37 @@
       <search-card @on-search="search" />
     </v-row>
     <v-row class="mt-5 mb-5">
-      <v-card id="description__card" class="pa-5">
-        <v-card-text id="description__text">
+      <v-card class="pa-5 description__card">
+        <v-card-text class="description__text">
           <vue-markdown id="description" :source="domain.description" />
         </v-card-text>
       </v-card>
     </v-row>
     <v-row class="mb-5">
-      <span>
-        <v-icon> mdi-exit-to-app </v-icon>
-        <nuxt-link id="summary__link" :to="summaryLink()">
-          go to summary
-        </nuxt-link>
-      </span>
+      <v-card class="description__card">
+        <v-card-text class="description__text">
+          <span>
+            <v-icon> mdi-exit-to-app </v-icon>
+            <nuxt-link id="summary__link" :to="summaryLink()">
+              go to summary
+            </nuxt-link>
+          </span>
+        </v-card-text>
+      </v-card>
     </v-row>
     <v-row>
-      <v-card id="search_logs__card" class="mr-5">
+      <v-card class="mr-5 log__card">
         <v-card-title> Latest searches </v-card-title>
         <v-list>
-          <v-list-item v-for="log in searchLogs" :key="log">
+          <v-list-item v-for="log in searchLogs.msgs.slice(0, 5)" :key="log">
             {{ log }}
           </v-list-item>
         </v-list>
       </v-card>
-      <v-card id="view_logs__card">
+      <v-card class="log__card">
         <v-card-title> Viewed entries </v-card-title>
         <v-list>
-          <v-list-item v-for="log in recentViews" :key="log">
+          <v-list-item v-for="log in recentViews.msgs.slice(0, 5)" :key="log">
             {{ log }}
           </v-list-item>
         </v-list>
@@ -54,13 +58,19 @@ export default Vue.extend({
     const domain = await $axios.$get(`/domains/${domainSlug}`).catch(() => {
       error(new Error('Could not find domain ' + domainSlug))
     })
-    return { domain }
+    const searchLogs = await $axios
+      .$get(`/domains/${domainSlug}/logs/search`)
+      .catch((e) => console.error(e))
+    const recentViews = await $axios
+      .$get(`/domains/${domainSlug}/logs/entry_view`)
+      .catch((e) => console.error(e))
+    return { domain, searchLogs, recentViews }
   },
   data() {
     return {
       defaultDescription: 'A documentation',
-      recentViews: ['Account', 'Agency', 'Transaction', 'Debt', 'Credit'],
-      searchLogs: ['acount', 'agent', 'transactions', 'debtit', 'card'],
+      recentViews: [],
+      searchLogs: [],
       domain: null as unknown as Domain,
     }
   },
@@ -88,20 +98,16 @@ export default Vue.extend({
 </script>
 
 <style>
-#description__card {
+.description__card {
   width: 100%;
 }
-#description__text {
+.description__text {
   font-family: Arial, Helvetica, sans-serif;
   color: #000;
   font-size: 1.2em;
 }
 
-#search_logs__card {
-  width: 49%;
-}
-
-#view_logs__card {
+.log__card {
   width: 49%;
 }
 </style>

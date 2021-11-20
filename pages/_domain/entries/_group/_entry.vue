@@ -61,11 +61,12 @@ export default Vue.extend({
   components: { VueMarkdown },
   async asyncData({ $axios, route, error }) {
     return await $axios
-      .$get('http://localhost:8000/entries/one', {
+      .$get('/entries/one', {
         params: {
           domain: route.params.domain,
           group: route.params.group,
           title: route.params.entry,
+          log: 'yes',
         },
       })
       .catch((err) => error({ statusCode: 404, message: err.toString() }))
