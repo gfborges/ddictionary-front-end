@@ -1,20 +1,36 @@
 <template>
   <v-app fizxed>
     <v-app-bar fixed app dark>
+      <!-- home page link -->
       <nuxt-link
-        id="domain-name"
-        class="white--text text-h6 text-uppercase"
+        v-if="showDomainHomePage()"
+        class="white--text text-h6 text-uppercase domain-name link"
         :to="homePageLink()"
         :no-prefetch="noPrefetch"
       >
         {{ domain.name }}
       </nuxt-link>
+      <span v-else class="white--text text-h6 text-uppercase domain-name">
+        domain dictionary
+      </span>
+
       <nuxt-link :to="createEntryLink()" :no-prefetch="noPrefetch">
         <v-btn v-if="isAuthenticated" color="primary"> create </v-btn>
       </nuxt-link>
       <v-spacer />
+
       <avatar v-if="isAuthenticated" />
-      <login v-else />
+      <div v-else>
+        <login />
+        <v-btn color="primary">
+          <nuxt-link
+            class="link text-uppercase white--text"
+            :to="{ name: 'signup' }"
+          >
+            SING UP
+          </nuxt-link>
+        </v-btn>
+      </div>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -38,20 +54,7 @@ export default Vue.extend({
   components: { Avatar, Login },
   data() {
     return {
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
-        },
-      ],
       noPrefetch: true,
-      link: '/pets',
     }
   },
   head() {
@@ -75,14 +78,19 @@ export default Vue.extend({
       const domain = this.$route.params.domain
       return { name: 'domains-domain-create-entry', params: { domain } }
     },
+    showDomainHomePage(): boolean {
+      return this.$route.path.startsWith('/domains')
+    },
   },
 })
 </script>
 
 <style>
-#domain-name {
-  margin-right: 5px;
+.link {
   text-decoration: none;
+}
+.domain-name {
+  margin-right: 5px;
 }
 
 html {

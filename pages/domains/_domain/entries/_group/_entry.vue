@@ -1,48 +1,51 @@
 <template>
   <v-row>
     <v-col>
-      <v-overlay :absolute="absolute" :value="overlay">
-        <v-btn color="success" @click="overlay = false"> Hide Overlay </v-btn>
-      </v-overlay>
-      <v-card class="tile">
-        <v-card-title>
-          {{ captalize(title) }} <v-spacer />
-          <span v-if="isAuthenticated">
-            <v-icon id="delete" @click="deleteEntry">mdi-delete</v-icon>
-            <v-icon id="update" @click="updateEntry">mdi-lead-pencil</v-icon>
-          </span>
-        </v-card-title>
-        <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
-      </v-card>
-      <v-card class="tile">
-        <v-card-title> Definitions </v-card-title>
-        <v-card-text class="text">
-          <v-list>
-            <v-list-item
-              v-for="(definition, i) in definitions"
-              :key="i"
-              align="center"
-              justify="center"
-              class="defs"
-            >
-              <div>
-                <strong>{{ i + 1 }}.</strong>&nbsp;
-              </div>
-              <vue-markdown :source="definition"></vue-markdown>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
-      <v-card class="tile">
-        <v-card-title> Translations </v-card-title>
-        <v-card-text class="text">
-          <v-list>
-            <v-list-item v-for="(trans, i) in translations" :key="i">
-              {{ trans }}
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
+      <v-container>
+        <v-card class="tile">
+          <v-card-title>
+            {{ captalize(title) }} <v-spacer />
+            <span v-if="isAuthenticated">
+              <v-icon id="delete" @click="deleteEntry">mdi-delete</v-icon>
+              <v-icon id="update" @click="updateEntry">mdi-lead-pencil</v-icon>
+            </span>
+          </v-card-title>
+          <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
+        </v-card>
+      </v-container>
+      <v-container>
+        <v-card class="tile">
+          <v-card-title> Definitions </v-card-title>
+          <v-card-text class="text">
+            <v-list>
+              <v-list-item
+                v-for="(definition, i) in definitions"
+                :key="i"
+                align="center"
+                justify="center"
+                class="defs"
+              >
+                <div>
+                  <strong>{{ i + 1 }}.</strong>&nbsp;
+                </div>
+                <vue-markdown :source="definition"></vue-markdown>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-container>
+      <v-container>
+        <v-card class="tile">
+          <v-card-title> Translations </v-card-title>
+          <v-card-text class="text">
+            <v-list>
+              <v-list-item v-for="(trans, i) in translations" :key="i">
+                {{ trans }}
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-container>
     </v-col>
     <v-col v-if="image">
       <div class="img__wrapper">
@@ -81,6 +84,7 @@ export default Vue.extend({
       translations: ['primeiro', 'segundo'],
       overlay: false,
       absolute: false,
+      domain: 'domain',
       id: 'object_id',
     }
   },
@@ -110,10 +114,6 @@ export default Vue.extend({
 </script>
 
 <style>
-.tile {
-  margin-bottom: 5px;
-}
-
 .text {
   color: rgba(0, 0, 0, 1);
   font-size: 1rem;

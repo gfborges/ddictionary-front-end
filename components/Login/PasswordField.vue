@@ -2,7 +2,7 @@
   <v-text-field
     :type="fieldType"
     label="password"
-    prepend-icon="mdi-lock"
+    :prepend-icon="prependIcon"
     :append-icon="show"
     @click:append="togglePassword"
     @keyup.enter="$emit('login')"
@@ -23,6 +23,10 @@ export default Vue.extend({
     password: {
       type: String,
       default: '',
+    },
+    prependIcon: {
+      type: String,
+      default: 'mdi-lock',
     },
   },
   data() {

@@ -10,7 +10,7 @@
           {{ otherError }}
         </h1>
         <p>
-          <NuxtLink :to="{ name: 'domains-singup' }"> Sing up </NuxtLink>
+          <NuxtLink :to="{ name: 'signup' }"> Sing up </NuxtLink>
         </p>
       </v-col>
     </v-layout>

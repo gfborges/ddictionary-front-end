@@ -1,47 +1,60 @@
 <template>
-  <v-col>
-    <v-row class="mb-5">
-      <h1>{{ domain.name }} Dictionary Docs</h1>
-      <search-card @on-search="search" />
-    </v-row>
-    <v-row class="mt-5 mb-5">
-      <v-card class="pa-5 description__card">
-        <v-card-text class="description__text">
-          <vue-markdown id="description" :source="domain.description" />
-        </v-card-text>
-      </v-card>
-    </v-row>
-    <v-row class="mb-5">
-      <v-card class="description__card">
-        <v-card-text class="description__text">
-          <span>
-            <v-icon> mdi-exit-to-app </v-icon>
-            <nuxt-link id="summary__link" :to="summaryLink()">
-              go to summary
-            </nuxt-link>
-          </span>
-        </v-card-text>
-      </v-card>
-    </v-row>
-    <v-row>
-      <v-card class="mr-5 log__card">
-        <v-card-title> Latest searches </v-card-title>
-        <v-list>
-          <v-list-item v-for="log in searchLogs.msgs.slice(0, 5)" :key="log">
-            {{ log }}
-          </v-list-item>
-        </v-list>
-      </v-card>
-      <v-card class="log__card">
-        <v-card-title> Viewed entries </v-card-title>
-        <v-list>
-          <v-list-item v-for="log in recentViews.msgs.slice(0, 5)" :key="log">
-            {{ log }}
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </v-row>
-  </v-col>
+  <v-row>
+    <v-col>
+      <v-container>
+        <h1>{{ domain.name }} Dictionary Docs</h1>
+        <search-card @on-search="search" />
+      </v-container>
+      <!-- decription -->
+      <v-container class="">
+        <v-card class="pa-5 description__card">
+          <v-card-text class="description__text">
+            <vue-markdown id="description" :source="domain.description" />
+          </v-card-text>
+        </v-card>
+      </v-container>
+      <!-- summary -->
+      <v-container>
+        <v-card>
+          <v-card-text class="description__text">
+            <span>
+              <v-icon> mdi-exit-to-app </v-icon>
+              <nuxt-link id="summary__link" :to="summaryLink()">
+                go to summary
+              </nuxt-link>
+            </span>
+          </v-card-text>
+        </v-card>
+      </v-container>
+
+      <v-container>
+        <v-row>
+          <!-- searches -->
+          <v-col>
+            <v-card class="mr-5 log__card">
+              <v-card-title> Latest searches </v-card-title>
+              <v-list>
+                <v-list-item v-for="log in searchLogs.slice(0, 5)" :key="log">
+                  {{ log }}
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-col>
+          <!-- views -->
+          <v-col>
+            <v-card class="log__card">
+              <v-card-title> Viewed entries </v-card-title>
+              <v-list>
+                <v-list-item v-for="log in recentViews.slice(0, 5)" :key="log">
+                  {{ log }}
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -64,7 +77,11 @@ export default Vue.extend({
     const recentViews = await $axios
       .$get(`/domains/${domainSlug}/logs/entry_view`)
       .catch((e) => console.error(e))
-    return { domain, searchLogs, recentViews }
+    return {
+      domain,
+      searchLogs: searchLogs?.msgs || [],
+      recentViews: recentViews?.msgs || [],
+    }
   },
   data() {
     return {
@@ -106,9 +123,5 @@ export default Vue.extend({
   font-family: Arial, Helvetica, sans-serif;
   color: #000;
   font-size: 1.2em;
-}
-
-.log__card {
-  width: 49%;
 }
 </style>

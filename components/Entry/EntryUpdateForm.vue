@@ -53,7 +53,7 @@
           <v-list outlined>
             <v-subheader>Definitions</v-subheader>
             <v-list-item-group>
-              <draggable v-model="definitions">
+              <draggable v-model="definitions" :force-fallback="true">
                 <transition-group>
                   <v-list-item
                     v-for="(def, i) of definitions"

@@ -12,6 +12,14 @@
           :entry="entry"
         />
       </v-card>
+      <v-pagination
+        v-model="page"
+        :length="pages"
+        :disabled="!pages"
+        @input="goToPage()"
+        @next="next()"
+        @previous="prev()"
+      ></v-pagination>
     </v-col>
   </v-row>
 </template>
@@ -30,14 +38,18 @@ export default Vue.extend({
   },
   async asyncData({ $axios, route }) {
     try {
+      const page = Number(route.query.page) || 1
+      const skip = (page - 1) * 10
       const entries = await $axios.$get('/entries/search', {
         params: {
           domain: route.params.domain,
           text: route.query.q,
           log: 'y',
+          size: 10,
+          skip,
         },
       })
-      return { entries }
+      return { entries: entries.data, pages: entries.total }
     } catch (e) {
       console.error(e)
       return { errorMsg: 'Could not search for entries.' }
@@ -47,8 +59,10 @@ export default Vue.extend({
     return {
       errorMsg: '',
       q: this.$route.query.q,
+      page: Number(this.$route.query.page) || 1,
       domain: this.$route.params.domain,
-      entries: null,
+      entries: [],
+      pages: 0,
     }
   },
   computed: {
@@ -58,7 +72,7 @@ export default Vue.extend({
   methods: {
     getLink(q: string) {
       return {
-        name: 'domain-search',
+        name: 'domains-domain-search',
         params: { domain: this.domain },
         query: { q },
       }
@@ -71,6 +85,19 @@ export default Vue.extend({
     },
     searchedTerm() {
       return this.$route.query.q
+    },
+    goToPage() {
+      const params = { domain: this.domain }
+      const query = { q: this.q, page: this.page.toString() }
+      this.$router.push({ name: 'domains-domain-search', params, query })
+    },
+    next() {
+      this.page = this.page++
+      this.goToPage()
+    },
+    prev() {
+      this.page = this.page--
+      this.goToPage()
     },
   },
 })

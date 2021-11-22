@@ -10,15 +10,12 @@
     <v-card>
       <v-list-item-content class="justify-center">
         <div class="mx-auto text-center">
-          <v-avatar color="primary">
+          <v-avatar color="primary" @click="goToHome()">
             <span class="white--text text-h6">{{ initials() }}</span>
           </v-avatar>
           <h3>{{ fullName() }}</h3>
-          <p class="text-caption mt-1">
-            {{ email() }}
-          </p>
           <v-divider class="my-3"></v-divider>
-          <v-btn depressed rounded text> Disconnect </v-btn>
+          <v-btn depressed rounded text @click="logout()"> Disconnect </v-btn>
         </div>
       </v-list-item-content>
     </v-card>
@@ -40,8 +37,16 @@ export default Vue.extend({
     fullName() {
       return this.domain.name
     },
-    email() {
-      return `${this.domain.slug}@email.com`
+    logout() {
+      this.$auth.options.redirect.logout = this.$route.fullPath
+      this.$auth.logout()
+    },
+    goToHome() {
+      const params = { domain: this.domain.slug }
+      this.$router.push({
+        name: 'domains-domain',
+        params,
+      })
     },
   },
 })

@@ -63,7 +63,8 @@ export default Vue.extend({
         .catch(() => (this.errorMsg = 'Wrong username or password'))
     },
     setRedirect() {
-      this.$auth.options.redirect.home = `/${this.username}`
+      this.$auth.options.redirect.home = `/domains/${this.username}`
+      this.$auth.options.redirect.login = `/domains/${this.username}`
     },
   },
 })
