@@ -3,18 +3,12 @@
     <v-col>
       <v-card>
         <v-card-title> Summary </v-card-title>
-        <v-list>
-          <v-list-item v-for="entry of entries" :key="entry.id">
-            <v-list-item-content>
-              <v-list-item-title>
-                <nuxt-link :to="entryLink(entry)">
-                  {{ entry.group }}/{{ entry.title }}
-                </nuxt-link>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
       </v-card>
+      <entry-search-card
+        v-for="entry in entries"
+        :key="entry.id"
+        :entry="entry"
+      />
     </v-col>
   </v-row>
 </template>

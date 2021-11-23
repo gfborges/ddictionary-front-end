@@ -2,7 +2,11 @@
   <v-row>
     <v-col>
       <v-container>
-        <h1>{{ domain.name }} Dictionary Docs</h1>
+        <v-card class="mb-2">
+          <v-card-text class="black--text">
+            <h1>{{ domain.name }} Dictionary Docs</h1>
+          </v-card-text>
+        </v-card>
         <search-card @on-search="search" />
       </v-container>
       <!-- decription -->

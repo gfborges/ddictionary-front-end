@@ -49,7 +49,7 @@ export default Vue.extend({
           skip,
         },
       })
-      return { entries: entries.data, pages: entries.total }
+      return { entries: entries.data, pages: Math.floor(entries.total / 10) }
     } catch (e) {
       console.error(e)
       return { errorMsg: 'Could not search for entries.' }

@@ -25,10 +25,7 @@
                 justify="center"
                 class="defs"
               >
-                <div>
-                  <strong>{{ i + 1 }}.</strong>&nbsp;
-                </div>
-                <vue-markdown :source="definition"></vue-markdown>
+                <vue-markdown> {{ definition }} </vue-markdown>
               </v-list-item>
             </v-list>
           </v-card-text>
@@ -99,7 +96,7 @@ export default Vue.extend({
     deleteEntry() {
       this.$axios.$delete(`/entries/${this.id}`).catch((e) => console.error(e))
       this.$router.push({
-        name: 'domain',
+        name: 'domains-domain',
         params: { domain: this.$route.params.domain },
       })
     },

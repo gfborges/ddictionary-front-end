@@ -18,14 +18,11 @@ export default Vue.extend({
   computed: {
     ...mapGetters({ domain: 'domain/domain' }),
   },
-  mounted() {
-    console.log('hey')
-  },
   methods: {
     onUpdate(entry: Entry) {
       console.log(entry)
       this.$router.push({
-        name: 'domain',
+        name: 'domains-domain',
         params: {
           domain: this.domain.slug,
         },

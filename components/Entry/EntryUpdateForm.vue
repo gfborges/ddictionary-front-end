@@ -11,10 +11,40 @@
             <!-- group -->
             <v-combobox
               v-model="group"
-              :items="domain.groups"
+              :items="groups"
               label="Group"
               chips
             ></v-combobox>
+            <!-- definitions -->
+            <v-list>
+              <v-subheader>Definitions</v-subheader>
+              <v-list-item-group>
+                <draggable v-model="definitions">
+                  <transition-group>
+                    <v-list-item
+                      v-for="(def, i) of definitions"
+                      :key="def.order"
+                      @mouseover="def.showEdit = true"
+                      @mouseleave="def.showEdit = false"
+                    >
+                      <v-list-item-content>
+                        <vue-markdown> {{ def.text }} </vue-markdown>
+                      </v-list-item-content>
+                      <v-list-item-action v-show="def.showEdit">
+                        <span>
+                          <v-icon @click="removeDefinitions(i)">
+                            mdi-delete
+                          </v-icon>
+                          <v-icon @click="updateDefinition(i)">
+                            mdi-lead-pencil
+                          </v-icon>
+                        </span>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </transition-group>
+                </draggable>
+              </v-list-item-group>
+            </v-list>
             <!-- definition input -->
             <client-only placeholder="Loading Your Editor...">
               <vue-simplemde
@@ -28,6 +58,20 @@
                 add definition
               </v-btn>
             </client-only>
+            <!-- translations -->
+            <v-list v-if="translations.length">
+              <v-subheader>Translations</v-subheader>
+              <v-list-item-group>
+                <v-list-item v-for="(trans, i) of translations" :key="i">
+                  <v-list-item-content>
+                    {{ trans }}
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-icon @click="deleteTranslation(i)">mdi-close</v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
             <!-- translation input -->
             <v-text-field
               v-model="translation"
@@ -48,49 +92,10 @@
             ></v-file-input>
           </v-form>
         </v-col>
-        <v-col class="overflow-y-auto" style="max-height: 70vh">
-          <!-- definitions -->
-          <v-list outlined>
-            <v-subheader>Definitions</v-subheader>
-            <v-list-item-group>
-              <draggable v-model="definitions" :force-fallback="true">
-                <transition-group>
-                  <v-list-item
-                    v-for="(def, i) of definitions"
-                    :key="def.order"
-                    @mouseover="def.showEdit = true"
-                    @mouseleave="def.showEdit = false"
-                  >
-                    <v-list-item-content>
-                      <vue-markdown> {{ def.text }} </vue-markdown>
-                    </v-list-item-content>
-                    <v-list-item-action v-show="def.showEdit">
-                      <span>
-                        <v-icon @click="removeDefinitions(i)">
-                          mdi-delete
-                        </v-icon>
-                        <v-icon>mdi-lead-pencil</v-icon>
-                      </span>
-                    </v-list-item-action>
-                  </v-list-item>
-                </transition-group>
-              </draggable>
-            </v-list-item-group>
-          </v-list>
-          <!-- translations -->
-          <v-list outlined class="mt-2">
-            <v-subheader>Translations</v-subheader>
-            <v-list-item-group>
-              <v-list-item v-for="(trans, i) of translations" :key="i">
-                {{ trans }}
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" @click="update">update</v-btn>
+      <v-btn color="primary" @click="submit">create</v-btn>
       <v-btn outlined color="normal" @click="emitCancel">cancel</v-btn>
     </v-card-actions>
   </v-card>
@@ -236,6 +241,10 @@ export default Vue.extend({
     },
     removeDefinitions(i: number) {
       this.definitions.splice(i, 1)
+    },
+    updateDefinition(i: number) {
+      this.currentDefinitionText = this.definitions[i].text
+      this.removeDefinitions(i)
     },
     addTransaction() {
       if (this.translation.length <= 25) {

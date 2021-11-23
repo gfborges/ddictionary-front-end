@@ -3,7 +3,13 @@
     <v-card-title class="headline">
       <v-input :messages="[searchedTermMessage()]">
         <v-icon slot="prepend" @click="search">mdi-magnify</v-icon>
-        <input ref="search" v-model="q" type="text" @keyup.enter="search" />
+        <input
+          ref="search"
+          v-model="q"
+          type="text"
+          placeholder="search..."
+          @keyup.enter="search"
+        />
         <v-icon v-if="q" slot="append" @click="clearInput">mdi-close</v-icon>
       </v-input>
     </v-card-title>

@@ -22,9 +22,11 @@ export default Vue.extend({
     onCreated(entry: Entry) {
       console.log(entry)
       this.$router.push({
-        name: 'domain',
+        name: 'domains-domain-entries-group-title',
         params: {
-          domain: this.domain.slug,
+          domain: entry.domain,
+          group: entry.group,
+          entry: entry.title,
         },
       })
     },
