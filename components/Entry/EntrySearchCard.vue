@@ -4,13 +4,16 @@
       {{ title }}
     </v-card-title>
     <v-card-subtitle>&lt;{{ group }}&gt;</v-card-subtitle>
-    <v-card-text> {{ definitions }} </v-card-text>
+    <v-card-text :style="{ textAlign: 'left' }">
+      <vue-markdown> {{ definitions }} </vue-markdown>
+    </v-card-text>
   </v-card>
 </template>
 
 <script lang="ts">
 // eslint-disable-next-line import/named
 import Vue, { PropOptions } from 'vue'
+import VueMarkdown from 'vue-markdown'
 
 export interface EntrySearch {
   title: string
@@ -20,6 +23,9 @@ export interface EntrySearch {
 
 export default Vue.extend({
   name: 'EntrySearchCard',
+  components: {
+    VueMarkdown,
+  },
   props: {
     entry: {
       type: Object,

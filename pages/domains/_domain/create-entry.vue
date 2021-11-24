@@ -20,9 +20,8 @@ export default Vue.extend({
   },
   methods: {
     onCreated(entry: Entry) {
-      console.log(entry)
       this.$router.push({
-        name: 'domains-domain-entries-group-title',
+        name: 'domains-domain-entries-group-entry',
         params: {
           domain: entry.domain,
           group: entry.group,

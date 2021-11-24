@@ -215,7 +215,7 @@ export default Vue.extend({
     async update() {
       const data = this.getFormData({ domain: undefined })
       await this.$axios.$patch(`/entries/${this.$props.id}`, data)
-      this.$emit('updated', { domain: this.domain })
+      this.$emit('updated', data)
     },
     async addGroup() {
       if (!this.groups.includes(this.group)) {
@@ -260,6 +260,9 @@ export default Vue.extend({
         }
         reader.readAsDataURL(file)
       }
+    },
+    deleteTranslation(i: number) {
+      this.translations.splice(i, 1)
     },
   },
 })

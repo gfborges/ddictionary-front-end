@@ -25,7 +25,9 @@
                 justify="center"
                 class="defs"
               >
-                <vue-markdown> {{ definition }} </vue-markdown>
+                <p>
+                  <vue-markdown> {{ definition }} </vue-markdown>
+                </p>
               </v-list-item>
             </v-list>
           </v-card-text>
@@ -125,15 +127,9 @@ export default Vue.extend({
   color: goldenrod;
   transition-delay: 0.125s;
 }
-
-ol li {
-  font-weight: bold;
+p {
+  text-align: left;
 }
-
-li > p {
-  font-weight: normal;
-}
-
 .img__wrapper {
   display: grid;
   justify-content: center;

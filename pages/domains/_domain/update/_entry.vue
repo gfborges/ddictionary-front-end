@@ -22,9 +22,11 @@ export default Vue.extend({
     onUpdate(entry: Entry) {
       console.log(entry)
       this.$router.push({
-        name: 'domains-domain',
+        name: 'domains-domain-entries-group-entry',
         params: {
           domain: this.domain.slug,
+          group: entry.group,
+          entry: entry.title,
         },
       })
     },

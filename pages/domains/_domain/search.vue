@@ -39,17 +39,18 @@ export default Vue.extend({
   async asyncData({ $axios, route }) {
     try {
       const page = Number(route.query.page) || 1
-      const skip = (page - 1) * 10
+      const size = 5
+      const skip = (page - 1) * size
       const entries = await $axios.$get('/entries/search', {
         params: {
           domain: route.params.domain,
           text: route.query.q,
           log: 'y',
-          size: 10,
+          size,
           skip,
         },
       })
-      return { entries: entries.data, pages: Math.floor(entries.total / 10) }
+      return { entries: entries.data, pages: Math.ceil(entries.total / size) }
     } catch (e) {
       console.error(e)
       return { errorMsg: 'Could not search for entries.' }
