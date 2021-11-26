@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Create New Entry</v-card-title>
+    <v-card-title>Update Entry</v-card-title>
     <v-card-text>
       <v-row>
         <v-col>

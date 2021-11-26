@@ -19,7 +19,7 @@
       </nuxt-link>
       <v-spacer />
 
-      <avatar v-if="isAuthenticated" />
+      <avatar v-if="showAvatar()" />
       <div v-else>
         <login />
         <v-btn color="primary">
@@ -55,6 +55,7 @@ export default Vue.extend({
   data() {
     return {
       noPrefetch: true,
+      // domain: { slug: '' },
     }
   },
   head() {
@@ -70,6 +71,9 @@ export default Vue.extend({
     }),
   },
   methods: {
+    showAvatar(): boolean {
+      return this.isAuthenticated && this.domain?.slug
+    },
     homePageLink(): { name: string; params: {} } {
       const domain = this.$route.params.domain
       return { name: 'domains-domain', params: { domain } }

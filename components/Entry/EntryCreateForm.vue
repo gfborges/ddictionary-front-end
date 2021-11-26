@@ -4,6 +4,9 @@
     <v-card-text>
       <v-row>
         <v-col>
+          <v-alert v-if="error.length" color="red" type="error" outlined>
+            {{ error }}
+          </v-alert>
           <v-form class="form">
             <!-- title -->
             <v-text-field v-model="title" required label="Title">
@@ -130,6 +133,7 @@ export default Vue.extend({
       image: undefined as unknown as string,
       definitions: [] as EntryDefinition[],
       translations: [] as string[],
+      error: '',
       editor: {
         toolbar: [
           'bold',
@@ -171,12 +175,15 @@ export default Vue.extend({
     },
     isValid() {
       if (!this.title) {
+        this.error = 'missing title'
         return false
       }
       if (!this.group) {
+        this.error = 'missing group'
         return false
       }
       if (this.definitions.length === 0) {
+        this.error = 'missing definition'
         return false
       }
       return true
@@ -199,16 +206,18 @@ export default Vue.extend({
       }
     },
     async create() {
-      const data = await this.$axios.$post('/entries', this.getFormData())
-      this.$emit('created', data)
+      try {
+        const data = await this.$axios.$post('/entries', this.getFormData())
+        this.$emit('created', data)
+      } catch {
+        this.error = 'name and group already taken'
+      }
     },
     async addGroup() {
       if (!this.groups.includes(this.group)) {
-        await this.$axios
-          .$post(`/domains/${this.domain.slug}/groups`, {
-            slug: this.group,
-          })
-          .catch((e) => console.error(e))
+        await this.$axios.$post(`/domains/${this.domain.slug}/groups`, {
+          slug: this.group,
+        })
       }
     },
     addDefinition() {

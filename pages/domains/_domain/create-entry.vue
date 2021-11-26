@@ -19,15 +19,25 @@ export default Vue.extend({
     ...mapGetters({ domain: 'domain/domain' }),
   },
   methods: {
-    onCreated(entry: Entry) {
-      this.$router.push({
-        name: 'domains-domain-entries-group-entry',
-        params: {
-          domain: entry.domain,
-          group: entry.group,
-          entry: entry.title,
-        },
-      })
+    async onCreated(entry: Entry) {
+      try {
+        entry = await this.$axios.$get('/entries/' + entry._id)
+        this.$router.push({
+          name: 'domains-domain-entries-group-entry',
+          params: {
+            domain: this.$route.params.domain,
+            group: entry.group,
+            entry: entry.title,
+          },
+        })
+      } catch (e) {
+        this.$router.push({
+          name: 'domains-domain',
+          params: {
+            domain: this.$route.params.domain,
+          },
+        })
+      }
     },
   },
 })

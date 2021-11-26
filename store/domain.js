@@ -1,5 +1,5 @@
 export const state = () => ({
-  domain: { name: 'error', slug: 'error' },
+  domain: { name: '', slug: '' },
 })
 
 export const namespace = true

@@ -14,12 +14,12 @@
               <v-text-field
                 v-model="slug"
                 label="slug"
-                :rules="rules.length"
+                :rules="[rules.size]"
                 required
               ></v-text-field>
 
               <password-field
-                :prepend-icon="false"
+                :prepend-icon="null"
                 @inputChange="updatePassword"
               ></password-field>
 
@@ -58,7 +58,7 @@ export default Vue.extend({
       password: '',
       description: '',
       rules: {
-        length: (v: string) => v.length >= 3 || 'Min 3 characters',
+        size: (v: string) => v.length >= 3 || 'Min 3 characters',
       },
       error: '',
     }
