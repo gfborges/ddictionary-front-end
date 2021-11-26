@@ -207,8 +207,8 @@ export default Vue.extend({
     },
     async create() {
       try {
-        const data = await this.$axios.$post('/entries', this.getFormData())
-        this.$emit('created', data)
+        await this.$axios.$post('/entries', this.getFormData())
+        this.$emit('created', this.getFormData())
       } catch {
         this.error = 'name and group already taken'
       }
